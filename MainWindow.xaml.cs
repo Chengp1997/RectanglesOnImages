@@ -86,11 +86,12 @@ namespace RectanglesOnImages
                 rect.Width = right - left;
                 rect.Height = bottom - top;
 
-                //put in canvas
-                Canvas.SetLeft(rect, left);
-                Canvas.SetRight(rect, right);
-                Canvas.SetTop(rect, top);
-                Canvas.SetBottom(rect, bottom);
+                //rect.HorizontalAlignment = HorizontalAlignment.Left;
+                //rect.VerticalAlignment = VerticalAlignment.Top;
+
+                //put in my canvas
+                //use canvas.setLeft at beginning -- always at middle -- change to margin
+                rect.Margin = new Thickness(left, top, 0, 0);
             }
         }
 
