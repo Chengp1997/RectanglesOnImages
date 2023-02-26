@@ -17,14 +17,13 @@
         </Grid.RowDefinitions>
         
         <!--content-->
-        <WrapPanel Grid.Column="0" Grid.Row="0" Margin="10" HorizontalAlignment="Center">
-            <Button Name="selectImage" Content="Choose Image Background" HorizontalAlignment="Left" Margin="0,0,20,0" Click="SelectImage_Click"/>
-            <Button >
-                <Rectangle Height="10" Width="20"/>
-            </Button>
+        <WrapPanel Grid.Column="0" Grid.Row="0" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button Name="selectImage" Content="Choose Image Background" Style="{StaticResource buttonStyle}" Click="SelectImage_Click"/>
+            <Label Margin="20,0,0,0">Press to draw the rectangle:</Label>
+            <Button Name="drawButton"  Style="{StaticResource buttonStyle}" Width="30" Click="DrawButton_Click"/>
         </WrapPanel>
-        <Grid Grid.Column="0" Grid.Row="1" Name="appCanvas">
-            
+        <Grid Grid.Column="0" Grid.Row="1" Name="appCanvas" MouseDown="Canvas_DrawMouseDown" MouseMove="Canvas_DrawMouseMove" MouseUp="Canvas_DrawMouseUp">
+            <Image Name="canvasImage" Stretch="Fill"/>
         </Grid>
-    </Grid>
+     </Grid>
 </Window>

@@ -4,6 +4,22 @@
              xmlns:local="clr-namespace:RectanglesOnImages"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style x:Key="buttonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="10,0,10,0"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="5"
+                                Background="DarkGray"
+                                BorderThickness="1">
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

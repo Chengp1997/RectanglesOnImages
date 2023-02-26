@@ -22,12 +22,11 @@ namespace RectanglesOnImages
     public partial class MainWindow : Window
     {
 
-        private bool _startDrawing;
-
         public MainWindow()
         {
             InitializeComponent();
-            _startDrawing = false;
+            _availableToDraw = true;
+            _isDrawing = false;
         }
 
         private void SelectImage_Click(object sender, RoutedEventArgs e)
@@ -38,13 +37,70 @@ namespace RectanglesOnImages
             {
                 Uri uri = new Uri(openFileDialog.FileName);
                 //using image brush to set the background
-                appCanvas.Background = new ImageBrush(new BitmapImage(uri));
+                //canvasGrid.Background = new ImageBrush(new BitmapImage(uri));
+                canvasImage.Source = new BitmapImage(uri);
             }
+        }
+
+
+
+        private bool _availableToDraw;//only when button is clicked can start drawing
+        private bool _isDrawing;
+        private Point _startPosition;
+        Rectangle rect;
+
+        private void DrawButton_Click(object sender, RoutedEventArgs e)
+        {
+            _availableToDraw = !_availableToDraw;
         }
 
         private void Canvas_DrawMouseDown(object sender, MouseButtonEventArgs e)
         {
+            if(_availableToDraw)
+            {
+                _isDrawing = true;//drawing now
+                _startPosition = e.GetPosition(appCanvas); //left top position
 
+                rect = new Rectangle
+                {
+                    Stroke = Brushes.Black,
+                    StrokeThickness = 2,
+                    Fill = Brushes.Yellow,
+                };
+
+                appCanvas.Children.Add(rect);
+            }
         }
+
+        private void Canvas_DrawMouseMove(object sender, MouseEventArgs e)
+        {
+            if (_availableToDraw && _isDrawing)
+            {
+                Point endPosition = e.GetPosition(appCanvas);
+
+                var top = Math.Min(_startPosition.Y, endPosition.Y);
+                var bottom = Math.Max(_startPosition.Y, endPosition.Y);
+                var left = Math.Min(_startPosition.X, endPosition.X);
+                var right = Math.Max(_startPosition.X, endPosition.X);
+
+                rect.Width = right - left;
+                rect.Height = bottom - top;
+
+                //put in canvas
+                Canvas.SetLeft(rect, left);
+                Canvas.SetRight(rect, right);
+                Canvas.SetTop(rect, top);
+                Canvas.SetBottom(rect, bottom);
+            }
+        }
+
+        private void Canvas_DrawMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (_availableToDraw)
+            {
+                _isDrawing = false;
+            }
+        }
+
     }
 }
