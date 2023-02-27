@@ -18,12 +18,15 @@
         
         <!--content-->
         <WrapPanel Grid.Column="0" Grid.Row="0" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button Name="selectImage" Content="Choose Image Background" Style="{StaticResource buttonStyle}" Click="SelectImage_Click"/>
-            <Label Margin="20,0,0,0">Press to draw the rectangle:</Label>
-            <Button Name="drawButton"  Style="{StaticResource buttonStyle}" Width="30" Click="DrawButton_Click"/>
+            <Button Name="selectImage" Content="Upload Image" Style="{StaticResource buttonStyle}" Click="SelectImage_Click"/>
+            <Button Name="drawButton"  Content ="Draw Rectangle" Style="{StaticResource buttonStyle}" Click="DrawButton_Click"/>
+            <Button Name="moveButton" Content="Choose to Move" Style="{StaticResource buttonStyle}" Click="MoveButton_Click"/>
+            <Label Name="currentStatus"/>
         </WrapPanel>
-        <Grid Grid.Column="0" Grid.Row="1" Name="appCanvas" MouseDown="Canvas_DrawMouseDown" MouseMove="Canvas_DrawMouseMove" MouseUp="Canvas_DrawMouseUp">
-            <Image Name="canvasImage" Stretch="Fill"/>
+        <Grid Grid.Column="0" Grid.Row="1" Name="appCanvas" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp">
+            <Border Background ="LightGreen" BorderThickness="2">
+                <Image Name="canvasImage" Stretch="Fill"/>
+            </Border>
         </Grid>
      </Grid>
 </Window>

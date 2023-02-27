@@ -22,11 +22,28 @@ namespace RectanglesOnImages
     public partial class MainWindow : Window
     {
 
+        private bool drawingMode;//only when button is clicked can start drawing
+        private bool moveMode;
+        private bool isDrawing;
+        private bool isCapture;
+        private Point startPosition;// mouse down position
+        Rectangle rect;
+        private List<Rectangle> rectangles;
+        double spanLeft;
+        double spanTop;
+        int currentIndex;
+
         public MainWindow()
         {
             InitializeComponent();
-            _availableToDraw = true;
-            _isDrawing = false;
+            drawingMode = false;
+            moveMode = false;
+            isDrawing = false;
+            isCapture = false;
+            rectangles = new List<Rectangle>(); 
+            spanLeft = 0;
+            spanTop = 0;
+            currentIndex = -1;
         }
 
         private void SelectImage_Click(object sender, RoutedEventArgs e)
@@ -37,29 +54,23 @@ namespace RectanglesOnImages
             {
                 Uri uri = new Uri(openFileDialog.FileName);
                 //using image brush to set the background
-                //canvasGrid.Background = new ImageBrush(new BitmapImage(uri));
                 canvasImage.Source = new BitmapImage(uri);
             }
         }
 
-
-
-        private bool _availableToDraw;//only when button is clicked can start drawing
-        private bool _isDrawing;
-        private Point _startPosition;
-        Rectangle rect;
-
         private void DrawButton_Click(object sender, RoutedEventArgs e)
         {
-            _availableToDraw = !_availableToDraw;
+            //when draw button is clicked -- can only draw rectangles
+            //if drawingMode is false -- can select/drag and drop/resize/delete
+            drawingMode = !drawingMode;
         }
 
-        private void Canvas_DrawMouseDown(object sender, MouseButtonEventArgs e)
+        private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(_availableToDraw)
+            if(drawingMode)
             {
-                _isDrawing = true;//drawing now
-                _startPosition = e.GetPosition(appCanvas); //left top position
+                isDrawing = true;//drawing now
+                startPosition = e.GetPosition(appCanvas); //left top position
 
                 rect = new Rectangle
                 {
@@ -70,38 +81,122 @@ namespace RectanglesOnImages
 
                 appCanvas.Children.Add(rect);
             }
+            else if(moveMode) //when drawingMode == false -> when mouse down - the item is selected
+            {
+                //position of my cursor 
+                var cursorPosition = e.GetPosition(appCanvas);
+
+                int index = SelectRectangle(cursorPosition);
+                Rectangle? selectedRectangle = index == -1? null : rectangles[index];
+
+                //if find the rectangle, capture the rectangle
+                if (selectedRectangle != null)
+                {
+                    rect = selectedRectangle;
+                    Mouse.Capture(rect);
+                    isCapture = true;
+                    currentIndex = index;
+
+                    spanLeft = cursorPosition.X - Canvas.GetLeft(rect);
+                    spanTop = cursorPosition.Y - Canvas.GetTop(rect);
+                }
+
+            }
         }
 
-        private void Canvas_DrawMouseMove(object sender, MouseEventArgs e)
+        private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_availableToDraw && _isDrawing)
+            if (drawingMode && isDrawing)
             {
                 Point endPosition = e.GetPosition(appCanvas);
 
-                var top = Math.Min(_startPosition.Y, endPosition.Y);
-                var bottom = Math.Max(_startPosition.Y, endPosition.Y);
-                var left = Math.Min(_startPosition.X, endPosition.X);
-                var right = Math.Max(_startPosition.X, endPosition.X);
+                DrawRectangle(startPosition, endPosition);
 
-                rect.Width = right - left;
-                rect.Height = bottom - top;
-
-                //rect.HorizontalAlignment = HorizontalAlignment.Left;
-                //rect.VerticalAlignment = VerticalAlignment.Top;
-
-                //put in my canvas
-                //use canvas.setLeft at beginning -- always at middle -- change to margin
-                rect.Margin = new Thickness(left, top, 0, 0);
-            }
-        }
-
-        private void Canvas_DrawMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (_availableToDraw)
+            }else if (moveMode && isCapture)//if is not drawing mode -- move will change the size of the shape
             {
-                _isDrawing = false;
+                Point cursorPosition = e.GetPosition(appCanvas);
+
+                //need to calculate the position of the leftTop and right Bottom to draw the rectangle
+
+                Point leftTop = new(cursorPosition.X-spanLeft,cursorPosition.Y-spanTop);
+                Point rightBottom = new(leftTop.X+rect.Width, leftTop.Y+rect.Height);
+
+                DrawRectangle(leftTop, rightBottom);
             }
         }
 
+        private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (drawingMode)
+            {
+                isDrawing = false;
+
+                //add current rectangle into the list
+                rectangles.Add(rect);
+            }
+            else if (isCapture) 
+            {
+                isCapture = false;
+                rect.ReleaseMouseCapture();
+                spanLeft = 0;
+                spanTop = 0;
+
+                //update rect in the list
+                rectangles[currentIndex] = rect;
+                currentIndex = -1;
+            }
+        }
+
+        private void MoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            moveMode = !moveMode;
+        }
+
+        private int SelectRectangle(Point position)
+        {
+            var x = position.X;
+            var y = position.Y;
+            int index = -1;
+
+            //search the rectangles
+            for (int i =0;i<rectangles.Count;i++)//search for the desire rectangles
+            {
+                Rectangle rectangle = rectangles[i];
+                if (x <= Canvas.GetRight(rectangle) && x >= Canvas.GetLeft(rectangle))
+                {
+                    if (y >= Canvas.GetTop(rectangle) && y <= Canvas.GetBottom(rectangle))
+                    {
+                        index = i;//have to find the last one -- it's the top one
+                    }
+                }
+            }
+            return index;
+        }
+
+        private void DrawRectangle(Point start, Point end) 
+        {
+            //calculate the rectangle attributes
+            var top = Math.Min(start.Y, end.Y);
+            var bottom = Math.Max(start.Y, end.Y);
+            var left = Math.Min(start.X, end.X);
+            var right = Math.Max(start.X, end.X);
+
+            rect.Width = right - left;
+            rect.Height = bottom - top;
+
+            //have to set it align to the left top -- or it will go to the middle
+            rect.HorizontalAlignment = HorizontalAlignment.Left;
+            rect.VerticalAlignment = VerticalAlignment.Top;
+
+            //put in my canvas
+            rect.Margin = new Thickness(left, top, 0, 0);
+            //have to set left and top inorder to get the position of the rectangle
+            Canvas.SetLeft(rect, left);
+            Canvas.SetTop(rect, top);
+            Canvas.SetRight(rect, right);
+            Canvas.SetBottom(rect, bottom);
+        }
+
+        
     }
 }
