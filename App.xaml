@@ -31,9 +31,6 @@
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Cursor" Value="Hand"/>
                 </Trigger>
-                <Trigger Property="IsMouseCaptured" Value="True">
-                    <Setter Property="StrokeThickness" Value="5"/>
-                </Trigger>
             </Style.Triggers>
         </Style>
     </Application.Resources>

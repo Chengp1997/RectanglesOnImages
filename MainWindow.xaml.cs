@@ -23,9 +23,9 @@ namespace RectanglesOnImages
     {
 
         private bool drawingMode;//only when button is clicked can start drawing
-        private bool moveMode;
+        private bool chooseMode;
         private bool isDrawing;
-        private bool isCapture;
+        private bool isMoving;
         private Point startPosition;// mouse down position
         Rectangle rect;
         private List<Rectangle> rectangles;
@@ -33,13 +33,15 @@ namespace RectanglesOnImages
         double spanTop;
         int currentIndex;
 
+        enum beChosen { NOTCHOSEN = 2, CHOSEN=5 }
+
         public MainWindow()
         {
             InitializeComponent();
             drawingMode = false;
-            moveMode = false;
+            chooseMode = false;
             isDrawing = false;
-            isCapture = false;
+            isMoving = false;
             rectangles = new List<Rectangle>(); 
             spanLeft = 0;
             spanTop = 0;
@@ -75,13 +77,13 @@ namespace RectanglesOnImages
                 rect = new Rectangle
                 {
                     Stroke = Brushes.Black,
-                    StrokeThickness = 2,
+                    StrokeThickness = (double) beChosen.NOTCHOSEN,
                     Fill = Brushes.Yellow,
                 };
 
                 appCanvas.Children.Add(rect);
             }
-            else if(moveMode) //when drawingMode == false -> when mouse down - the item is selected
+            else if(chooseMode) //when drawingMode == false -> when mouse down - the item is selected
             {
                 //position of my cursor 
                 var cursorPosition = e.GetPosition(appCanvas);
@@ -94,13 +96,12 @@ namespace RectanglesOnImages
                 {
                     rect = selectedRectangle;
                     Mouse.Capture(rect);
-                    isCapture = true;
+                    isMoving = true;
                     currentIndex = index;
 
                     spanLeft = cursorPosition.X - Canvas.GetLeft(rect);
                     spanTop = cursorPosition.Y - Canvas.GetTop(rect);
                 }
-
             }
         }
 
@@ -112,14 +113,23 @@ namespace RectanglesOnImages
 
                 DrawRectangle(startPosition, endPosition);
 
-            }else if (moveMode && isCapture)//if is not drawing mode -- move will change the size of the shape
+            }else if (chooseMode && isMoving)//if is not drawing mode -- move will change the size of the shape
             {
                 Point cursorPosition = e.GetPosition(appCanvas);
 
                 //need to calculate the position of the leftTop and right Bottom to draw the rectangle
+                var left = cursorPosition.X - spanLeft;
+                var top = cursorPosition.Y - spanTop;
 
-                Point leftTop = new(cursorPosition.X-spanLeft,cursorPosition.Y-spanTop);
-                Point rightBottom = new(leftTop.X+rect.Width, leftTop.Y+rect.Height);
+                //regulation -- can not access the grid
+                if (left < 0) { left = 0; }
+                if (top < 0) {  top = 0; }
+                if (left + rect.Width > appCanvas.ActualWidth) { left = appCanvas.ActualWidth - rect.Width; }
+                if(top + rect.Height > appCanvas.ActualHeight) { top = appCanvas.ActualHeight - rect.Height; }
+
+                //start drawing
+                Point leftTop = new(left,top);
+                Point rightBottom = new(left+rect.Width, top+rect.Height);
 
                 DrawRectangle(leftTop, rightBottom);
             }
@@ -134,9 +144,9 @@ namespace RectanglesOnImages
                 //add current rectangle into the list
                 rectangles.Add(rect);
             }
-            else if (moveMode && isCapture) 
+            else if (chooseMode && isMoving) 
             {
-                isCapture = false;
+                isMoving = false;
                 rect.ReleaseMouseCapture();
                 spanLeft = 0;
                 spanTop = 0;
@@ -147,9 +157,9 @@ namespace RectanglesOnImages
             }
         }
 
-        private void MoveButton_Click(object sender, RoutedEventArgs e)
+        private void ChooseButton_Click(object sender, RoutedEventArgs e)
         {
-            moveMode = !moveMode;
+            chooseMode = !chooseMode;
         }
 
         private int SelectRectangle(Point position)
@@ -168,6 +178,19 @@ namespace RectanglesOnImages
                     {
                         index = i;//have to find the last one -- it's the top one
                     }
+                }
+            }
+
+            //if find the one, made the rectangle style different, others back 
+            for (int i = 0; i < rectangles.Count; i++)
+            {
+                if (i == index)
+                {
+                    rectangles[i].StrokeThickness = (double)beChosen.CHOSEN;
+                }
+                else
+                {
+                    rectangles[i].StrokeThickness = (double)(beChosen.NOTCHOSEN);
                 }
             }
             return index;
@@ -197,6 +220,16 @@ namespace RectanglesOnImages
             Canvas.SetBottom(rect, bottom);
         }
 
-        
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void editButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
     }
 }

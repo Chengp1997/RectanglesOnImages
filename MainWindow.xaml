@@ -20,11 +20,12 @@
         <WrapPanel Grid.Column="0" Grid.Row="0" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Button Name="selectImage" Content="Upload Image" Style="{StaticResource buttonStyle}" Click="SelectImage_Click"/>
             <Button Name="drawButton"  Content ="Draw Rectangle" Style="{StaticResource buttonStyle}" Click="DrawButton_Click"/>
-            <Button Name="moveButton" Content="Move Rectangle" Style="{StaticResource buttonStyle}" Click="MoveButton_Click"/>
+            <Button Name="chooseButton" Content="choose Rectangle" Style="{StaticResource buttonStyle}" Click="ChooseButton_Click"/>
+            <Button Name="deleteButton" Content="Delete Rectangle" Style="{StaticResource buttonStyle}" Click="DeleteButton_Click"/>
             <Label Name="currentStatus"/>
         </WrapPanel>
         <Grid Grid.Column="0" Grid.Row="1" Name="appCanvas" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp">
-            <Border Background ="LightGreen" BorderThickness="2">
+            <Border Background ="LightGreen">
                 <Image Name="canvasImage" Stretch="Fill"/>
             </Border>
         </Grid>
