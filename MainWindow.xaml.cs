@@ -127,14 +127,14 @@ namespace RectanglesOnImages
 
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (drawingMode)
+            if (drawingMode && isDrawing)
             {
                 isDrawing = false;
 
                 //add current rectangle into the list
                 rectangles.Add(rect);
             }
-            else if (isCapture) 
+            else if (moveMode && isCapture) 
             {
                 isCapture = false;
                 rect.ReleaseMouseCapture();
