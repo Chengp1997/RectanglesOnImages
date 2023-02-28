@@ -47,7 +47,6 @@ namespace RectanglesOnImages
             colorPicker.ItemsSource = typeof(Colors).GetProperties();
             //make it default to white
             colorPicker.SelectedItem = typeof(Colors).GetProperty("White");
-            
         }
 
         private void SelectImage_Click(object sender, RoutedEventArgs e)
@@ -70,6 +69,35 @@ namespace RectanglesOnImages
             //when draw button is clicked -- can only draw rectangles
             //if drawingMode is false -- can select/drag and drop/resize/delete
             drawingMode = !drawingMode;
+
+            //style changed
+            if (drawingMode) { drawButton.Background = Brushes.LightGreen; }
+            else { drawButton.Background = Brushes.Pink; }
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (rect != null)
+            {
+                rectangles.RemoveAt(currentIndex);
+                appCanvas.Children.RemoveAt(currentIndex + 1);//start from 1!!!!
+                ResetCurrentStatus();
+            }
+        }
+
+        private void SaveImage_Click(object sender, RoutedEventArgs e)
+        {
+            Uri path = new Uri(@"d:\temp\screenshot.png");
+            SaveImage(path);
+        }
+
+        private void ColorPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (rect != null)
+            {
+                Color selectedColor = (Color)(colorPicker.SelectedItem as PropertyInfo).GetValue(null, null);
+                rect.Fill = new SolidColorBrush(selectedColor);
+            }
         }
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -186,17 +214,6 @@ namespace RectanglesOnImages
             Canvas.SetBottom(rect, bottom);
         }
 
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            currentStatus.Content = currentIndex.ToString();
-            if (rect != null)
-            {
-                rectangles.RemoveAt(currentIndex);
-                appCanvas.Children.RemoveAt(currentIndex+1);//start from 1!!!!
-                ResetCurrentStatus();
-            }
-        }
-
         private void ChooseRectangle(Point cursorPosition)
         {
 
@@ -223,8 +240,8 @@ namespace RectanglesOnImages
             RefreshRectangles();
 
             if (currentIndex == -1) {
-                ResetCurrentStatus() ;
-                return; 
+                ResetCurrentStatus();
+                return;
             }// if not found ,just return
 
             //if found, set the status of current rectangles
@@ -239,21 +256,21 @@ namespace RectanglesOnImages
         private void RefreshRectangles()
         {
             //refresh stroke
-            for (int i = 0;i < rectangles.Count;i++)
+            for (int i = 0; i < rectangles.Count; i++)
             {
                 var layer = AdornerLayer.GetAdornerLayer(rectangles[i]);
                 var adorner = layer.GetAdorners(rectangles[i]);
                 if (adorner != null) { layer.Remove(adorner[0]); }
-                if ( i == currentIndex)
+                if (i == currentIndex)
                 {
                     layer.Add(new DraggableRectangle(rectangles[i]));
-                    rectangles[i].StrokeThickness = (double) beChosen.CHOSEN;
+                    rectangles[i].StrokeThickness = (double)beChosen.CHOSEN;
                     continue;
                 }
-                rectangles[i].StrokeThickness = (double) beChosen.NOTCHOSEN;
+                rectangles[i].StrokeThickness = (double)beChosen.NOTCHOSEN;
             }
 
-            
+
 
         }
 
@@ -263,12 +280,6 @@ namespace RectanglesOnImages
             this.rect = null;
             spanLeft = 0;
             spanTop = 0;
-        }
-
-        private void SaveImage_Click(object sender, RoutedEventArgs e)
-        {
-            Uri path = new Uri(@"d:\temp\screenshot.png");
-            SaveImage(path);
         }
 
         private void SaveImage(Uri destination)
@@ -292,13 +303,5 @@ namespace RectanglesOnImages
             }
         }
 
-        private void ColorPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if(rect != null)
-            {
-                Color selectedColor = (Color)(colorPicker.SelectedItem as PropertyInfo).GetValue(null, null);
-                rect.Fill = new SolidColorBrush(selectedColor);
-            }
-        }
     }
 }

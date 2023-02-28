@@ -6,20 +6,14 @@
     <Application.Resources>
         <Style x:Key="buttonStyle" TargetType="{x:Type Button}">
             <Setter Property="Margin" Value="10,0,10,0"/>
-            <Setter Property="Height" Value="25"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border CornerRadius="5"
-                                Background="DarkGray"
-                                BorderThickness="1">
-                            <ContentPresenter
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Background" Value="Pink"/>
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="5"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </Style>
+            </Style.Resources>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Cursor" Value="Hand"/>
@@ -30,6 +24,13 @@
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Cursor" Value="Hand"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="ComboBoxItem">
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="Pink"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
