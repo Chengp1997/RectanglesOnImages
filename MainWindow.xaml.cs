@@ -87,8 +87,13 @@ namespace RectanglesOnImages
 
         private void SaveImage_Click(object sender, RoutedEventArgs e)
         {
-            Uri path = new Uri(@"d:\temp\screenshot.png");
-            SaveImage(path);
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp";
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                Uri path = new Uri(saveFileDialog.FileName);
+                SaveImage(path);
+            }
         }
 
         private void ColorPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
