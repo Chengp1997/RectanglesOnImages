@@ -47,6 +47,7 @@ namespace RectanglesOnImages
             colorPicker.ItemsSource = typeof(Colors).GetProperties();
             //make it default to white
             colorPicker.SelectedItem = typeof(Colors).GetProperty("White");
+            
         }
 
         private void SelectImage_Click(object sender, RoutedEventArgs e)
@@ -86,6 +87,7 @@ namespace RectanglesOnImages
                 };
 
                 appCanvas.Children.Add(rect);
+
             }
             else //when not drawing mode - can choose rectangles
             {
@@ -231,19 +233,28 @@ namespace RectanglesOnImages
             spanLeft = cursorPosition.X - Canvas.GetLeft(rect);
             spanTop = cursorPosition.Y - Canvas.GetTop(rect);
 
+
         }
 
         private void RefreshRectangles()
         {
-            for(int i = 0;i < rectangles.Count;i++)
+            //refresh stroke
+            for (int i = 0;i < rectangles.Count;i++)
             {
-                if( i == currentIndex)
+                var layer = AdornerLayer.GetAdornerLayer(rectangles[i]);
+                var adorner = layer.GetAdorners(rectangles[i]);
+                if (adorner != null) { layer.Remove(adorner[0]); }
+                if ( i == currentIndex)
                 {
+                    layer.Add(new DraggableRectangle(rectangles[i]));
                     rectangles[i].StrokeThickness = (double) beChosen.CHOSEN;
                     continue;
                 }
                 rectangles[i].StrokeThickness = (double) beChosen.NOTCHOSEN;
             }
+
+            
+
         }
 
         private void ResetCurrentStatus()
