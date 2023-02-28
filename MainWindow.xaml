@@ -6,13 +6,13 @@
         xmlns:local="clr-namespace:RectanglesOnImages"
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="800">
-    <Grid Margin="10">
+    <Grid Margin="10" Width="Auto" Height="Auto">
         <!--definition-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.1*"/>
+            <RowDefinition Height="0.2*"/>
             <RowDefinition Height ="0.9*"/>
         </Grid.RowDefinitions>
         
@@ -21,6 +21,18 @@
             <Button Name="selectImage" Content="Upload Image" Style="{StaticResource buttonStyle}" Click="SelectImage_Click"/>
             <Button Name="drawButton"  Content ="Draw Rectangle" Style="{StaticResource buttonStyle}" Click="DrawButton_Click"/>
             <Button Name="deleteButton" Content="Delete Rectangle" Style="{StaticResource buttonStyle}" Click="DeleteButton_Click"/>
+            <Button Name="saveImage" Content="Save Image" Style="{StaticResource buttonStyle}" Click="SaveImage_Click"/>
+            <Label Margin="20,0,10,0">Color Picker:</Label>
+            <ComboBox Name="colorPicker" SelectionChanged="ColorPicker_SelectionChanged" Width="150">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Fill="{Binding Name}" Width="15" Height="15" Margin="0,2,5,2"/>
+                            <Label Content="{Binding Name}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
             <Label Name="currentStatus"/>
         </WrapPanel>
         <Grid Grid.Column="0" Grid.Row="1" Name="appCanvas" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp">

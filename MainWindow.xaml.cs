@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -42,12 +44,18 @@ namespace RectanglesOnImages
             this.canMove = false;
             this.rectangles = new List<Rectangle>();
             ResetCurrentStatus();
+            colorPicker.ItemsSource = typeof(Colors).GetProperties();
+            //make it default to white
+            colorPicker.SelectedItem = typeof(Colors).GetProperty("White");
         }
 
         private void SelectImage_Click(object sender, RoutedEventArgs e)
         {
             //select file from computer
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Upload your canvas";
+            openFileDialog.Multiselect = false;
+            openFileDialog.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp";
             if (openFileDialog.ShowDialog() == true)
             {
                 Uri uri = new Uri(openFileDialog.FileName);
@@ -74,7 +82,7 @@ namespace RectanglesOnImages
                 {
                     Stroke = Brushes.Black,
                     StrokeThickness = (double)beChosen.NOTCHOSEN,
-                    Fill = Brushes.Yellow,
+                    Fill = new SolidColorBrush((Color)(colorPicker.SelectedItem as PropertyInfo).GetValue(null, null)),
                 };
 
                 appCanvas.Children.Add(rect);
@@ -182,7 +190,7 @@ namespace RectanglesOnImages
             if (rect != null)
             {
                 rectangles.RemoveAt(currentIndex);
-                appCanvas.Children.RemoveAt(currentIndex+1);
+                appCanvas.Children.RemoveAt(currentIndex+1);//start from 1!!!!
                 ResetCurrentStatus();
             }
         }
@@ -244,6 +252,42 @@ namespace RectanglesOnImages
             this.rect = null;
             spanLeft = 0;
             spanTop = 0;
+        }
+
+        private void SaveImage_Click(object sender, RoutedEventArgs e)
+        {
+            Uri path = new Uri(@"d:\temp\screenshot.png");
+            SaveImage(path);
+        }
+
+        private void SaveImage(Uri destination)
+        {
+            Size size = new Size(appCanvas.ActualWidth, appCanvas.ActualHeight);
+            if (size.IsEmpty) return;
+            RenderTargetBitmap bitmap = new RenderTargetBitmap((int)size.Width, (int)size.Height, 96, 96, PixelFormats.Pbgra32);
+            DrawingVisual drawingVisual = new DrawingVisual();
+            using (DrawingContext context = drawingVisual.RenderOpen())
+            {
+                context.DrawRectangle(new VisualBrush(appCanvas), null, new Rect(new Point(), size));
+                context.Close();
+            }
+            bitmap.Render(drawingVisual);
+
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            using(FileStream stream = new FileStream(destination.LocalPath, FileMode.Create, FileAccess.Write))
+            {
+                encoder.Save(stream);
+            }
+        }
+
+        private void ColorPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(rect != null)
+            {
+                Color selectedColor = (Color)(colorPicker.SelectedItem as PropertyInfo).GetValue(null, null);
+                rect.Fill = new SolidColorBrush(selectedColor);
+            }
         }
     }
 }
