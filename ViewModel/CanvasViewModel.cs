@@ -55,18 +55,7 @@ namespace RectanglesOnImageMVVM.ViewModel
             set { if (_rect != value) { _rect = value; } }
         }
 
-        public double SpanLeft { get { return _spanLeft; } set { _spanLeft = value; } }
-
-        public double SpanTop { get { return _spanTop; } set { _spanTop = value; } }
-
-        public int CurrentIndex { get { return _currentIndex; } set { _currentIndex = value; } }
-
         public bool DrawingMode { get { return _drawingMode; } set { _drawingMode = value; } }
-
-        public void AddRectangle(Rectangle rectangle)
-        {
-            _rectangles.Add(rectangle);
-        }
 
         public int RemoveRectangle()
         {
