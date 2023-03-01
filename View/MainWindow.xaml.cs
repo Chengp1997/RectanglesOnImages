@@ -27,7 +27,7 @@ namespace RectanglesOnImages
 
         private void SelectImage_Click(object sender, RoutedEventArgs e)
         {
-            canvasImage.Source = _canvasViewModel.UploadCanvasImage();
+            canvasImage.Source = _canvasViewModel.ChooseCanvas();
         }
 
         private void DrawButton_Click(object sender, RoutedEventArgs e)
@@ -52,7 +52,7 @@ namespace RectanglesOnImages
 
         private void SaveImage_Click(object sender, RoutedEventArgs e)
         {
-            _canvasViewModel.SaveToFile(appCanvas);
+            _canvasViewModel.SaveCanvas(appCanvas);
         }
 
         private void ColorPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -70,6 +70,7 @@ namespace RectanglesOnImages
 
             var mouseDownPosition = e.GetPosition(appCanvas);
             _canvasViewModel.MouseDownOnCanvas(mouseDownPosition, currentColor);
+            //if current is drawing mode -- need to add the rectangle into the view
             if (_canvasViewModel.DrawingMode)
             {
                 appCanvas.Children.Add(_canvasViewModel.Rect);

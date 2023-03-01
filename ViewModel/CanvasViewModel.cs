@@ -130,13 +130,13 @@ namespace RectanglesOnImageMVVM.ViewModel
 
         }
 
-        public BitmapImage UploadCanvasImage()
+        public BitmapImage ChooseCanvas()
         {
             this._canvasImage = _fileService.FindImage();
             return _canvasImage;
         }
 
-        public void SaveToFile(FrameworkElement visual)
+        public void SaveCanvas(FrameworkElement visual)
         {
             _fileService.SaveToFile(visual);
         }
