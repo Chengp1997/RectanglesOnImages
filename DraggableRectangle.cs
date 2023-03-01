@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
@@ -80,7 +75,7 @@ namespace RectanglesOnImages
 
             foreach (Thumb thumb in _grid.Children)
             {
-                thumb.Width =10;
+                thumb.Width = 10;
                 thumb.Height = 10;
                 thumb.Background = Brushes.Green;
                 thumb.Template = new ControlTemplate(typeof(Thumb))
@@ -108,8 +103,8 @@ namespace RectanglesOnImages
             _grid.Arrange(new Rect(new Point(-_leftThumb.Width / 2, -_leftThumb.Height / 2), new Size(finalSize.Width + _leftThumb.Width, finalSize.Height + _leftThumb.Height)));
             return finalSize;
         }
-        
-        
+
+
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             var element = _adornedElement as FrameworkElement;
