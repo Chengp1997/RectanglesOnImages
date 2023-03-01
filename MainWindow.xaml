@@ -33,11 +33,10 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
+            <Label Name="status"/>
         </WrapPanel>
         <Grid Grid.Column="0" Grid.Row="1" Name="appCanvas" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp">
-            <Border Background ="LightGreen">
-                <Image Name="canvasImage" Stretch="Fill"/>
-            </Border>
+            <Image Name="canvasImage" Stretch="Fill"/>
         </Grid>
      </Grid>
 </Window>
