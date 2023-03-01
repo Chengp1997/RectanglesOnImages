@@ -1,7 +1,12 @@
 # RectanglesOnImages
 
-Users can select the canvas, draw rectangle, resize rectangle, change color of the rectangle, save the canvas.
+Users can select the canvas, draw rectangle, resize rectangle, change color of the rectangle, choose pen's color, save the canvas.
 
+Drawing is only allowed in the drawing mode. 
+Other manipulations are all based on the non-drawing mode.
+
+
+//First time using C#, These are all the tutorial that I learned/used in this project.
 Intro: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/getting-started/walkthrough-my-first-wpf-desktop-application?view=netframeworkdesktop-4.8
 
 1. Select and load an image.
