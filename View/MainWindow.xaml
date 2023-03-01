@@ -36,7 +36,10 @@
             <Label Name="status"/>
         </WrapPanel>
         <Grid Grid.Column="0" Grid.Row="1" Name="appCanvas" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" MouseUp="Canvas_MouseUp">
-            <Image Name="canvasImage" Stretch="Fill"/>
+            <Border Background="LightGreen">
+                <Image Name="canvasImage" Stretch="Fill"/>
+            </Border>
+            
         </Grid>
      </Grid>
 </Window>

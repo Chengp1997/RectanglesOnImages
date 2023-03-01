@@ -13,7 +13,7 @@ namespace RectanglesOnImageMVVM.common
         public ImageService()
         {
             string path = AppDomain.CurrentDomain.BaseDirectory;
-            _defaultImage = new BitmapImage(new Uri(path.Substring(0, path.LastIndexOf("bin")) + "Images/defaultCanvas.jpg"));
+            //_defaultImage = new BitmapImage(new Uri(path.Substring(0, path.LastIndexOf("bin")) + "Images/defaultCanvas.jpg"));
         }
 
         public BitmapImage DefaultImage { get { return _defaultImage; } }
